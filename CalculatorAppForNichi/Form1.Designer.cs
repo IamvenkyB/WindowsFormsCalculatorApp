@@ -258,7 +258,7 @@ namespace CalculatorAppForNichi
             button17.TabIndex = 16;
             button17.Text = "+/=";
             button17.UseVisualStyleBackColor = false;
-            button17.Click += Button_Click;
+            //button17.Click += Button_Click;
             // 
             // button1byx
             // 
@@ -270,7 +270,7 @@ namespace CalculatorAppForNichi
             button1byx.TabIndex = 17;
             button1byx.Text = "M+";
             button1byx.UseVisualStyleBackColor = false;
-            button1byx.Click += Calculation_Click;
+            //button1byx.Click += Calculation_Click;
             // 
             // ButtonPercentile
             // 

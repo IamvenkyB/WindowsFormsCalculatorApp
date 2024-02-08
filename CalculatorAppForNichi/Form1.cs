@@ -1,5 +1,8 @@
 ﻿using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Diagnostics.Metrics;
+using log4net.Config;
+using Microsoft.VisualBasic.Logging;
+using log4net;
 
 namespace CalculatorAppForNichi
 {
@@ -17,69 +20,85 @@ namespace CalculatorAppForNichi
         double totalSum = 0;
         double beforeLastInputNumber;
 
+        private static readonly ILog log = LogManager.GetLogger(typeof(Form1));
         public Form1()
         {
             InitializeComponent();
+
+            // Initialize log4net
+            XmlConfigurator.Configure(new System.IO.FileInfo("log4net.config"));
+
+            // Log a test message
+            log.Info("Form1 initialized.");
         }
         private void Button_Click(object sender, EventArgs e)
         {
-            a = true;
-            if (ResultTextbox.Text == "0" || predicate)
+            try
             {
-                ResultTextbox.Clear();
-            }
-
-            predicate = false;
-
-            if (((Button)sender).Text == ".")
-            {
-                if (!ResultTextbox.Text.Contains("."))
+                a = true;
+                if (ResultTextbox.Text == "0" || predicate)
                 {
-                    ResultTextbox.Text += ((Button)sender).Text;
+                    ResultTextbox.Clear();
                 }
-            }
-            else
-            {
-                if (counter != 0)
+
+                predicate = false;
+
+                if (((Button)sender).Text == ".")
                 {
-                    ResultTextbox.Text = ((Button)sender).Text;
-                    counter = 0;
+                    if (!ResultTextbox.Text.Contains("."))
+                    {
+                        ResultTextbox.Text += ((Button)sender).Text;
+                    }
                 }
                 else
                 {
-                    // Check if the current text already contains a decimal point
-                    if (!ResultTextbox.Text.Contains("."))
+                    if (counter != 0)
                     {
-                        // If not, directly append the button text to the text box
-                        ResultTextbox.Text += ((Button)sender).Text;
+                        ResultTextbox.Text = ((Button)sender).Text;
+                        counter = 0;
                     }
                     else
                     {
-                        // If the text already contains a decimal point, determine the position of the decimal point
-                        int decimalIndex = ResultTextbox.Text.IndexOf(".");
-
-                        // Check if there are more than 5 digits after the decimal point
-                        if (ResultTextbox.Text.Length - decimalIndex <= 5)
+                        // Check if the current text already contains a decimal point
+                        if (!ResultTextbox.Text.Contains("."))
                         {
-                            // If there are 5 or fewer digits after the decimal point, append the button text to the text box
+                            // If not, directly append the button text to the text box
                             ResultTextbox.Text += ((Button)sender).Text;
+                        }
+                        else
+                        {
+                            // If the text already contains a decimal point, determine the position of the decimal point
+                            int decimalIndex = ResultTextbox.Text.IndexOf(".");
+
+                            // Check if there are more than 5 digits after the decimal point
+                            if (ResultTextbox.Text.Length - decimalIndex <= 5)
+                            {
+                                // If there are 5 or fewer digits after the decimal point, append the button text to the text box
+                                ResultTextbox.Text += ((Button)sender).Text;
+                            }
                         }
                     }
                 }
-            }
 
-            lastInputNumber = double.Parse(ResultTextbox.Text);
+                lastInputNumber = double.Parse(ResultTextbox.Text);
 
-            number = ((Button)sender).Text;
-            ///1.
-            if (num_of_input_operation == 0)
-            {
-                firstNum = double.Parse(ResultTextbox.Text);
+                number = ((Button)sender).Text;
+                ///1.
+                if (num_of_input_operation == 0)
+                {
+                    firstNum = double.Parse(ResultTextbox.Text);
+                }
+                if (num_of_input_operation >= 1)
+                {
+                    total = Calculation(inputvalue, firstNum, lastInputNumber);
+                }
             }
-            if (num_of_input_operation >= 1)
+            catch (Exception)
             {
-                total = Calculation(inputvalue, firstNum, lastInputNumber);
+
+                //label1.Text = "Invalid Arguement";
             }
+            
         }
 
        
@@ -111,7 +130,7 @@ namespace CalculatorAppForNichi
                     break;
 
                 default:
-                  //  Lbl_1.Text = "Invalid argument!";
+                   //label1.Text = "Invalid argument!";
                     break;
             }
             return sum;
